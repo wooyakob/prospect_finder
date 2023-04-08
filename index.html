@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prospect Finder</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mt-4">Prospect Finder</h1>
+        <form method="POST" action="/">
+            <div class="input-group mt-4">
+                <input type="text" name="search_input" class="form-control" placeholder="Enter the prospect's full name...">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>
+        </form>
+        <p class="text-center mt-2">Try: John Smith, Jane Doe, Bob Johnson, or Alice Lee</p>
+        {% if matches %}
+        <div id="results" class="mt-4">
+            <h3>Matches found:</h3>
+            {% for prospect in matches %}
+                <p>{{ prospect['name'] }} - {{ prospect['company'] }} - <a href="mailto:{{ prospect['email'] }}" onclick="handleEmailClick(event, '{{ prospect['email'] }}')">{{ prospect['email'] }}</a> - {{ prospect['phone'] }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <script>
+        function handleEmailClick(event, email) {
+            if (!navigator.userAgent.includes("Chrome")) {
+                return;
+            }
+
+            event.preventDefault();
+            const isConfirmed = confirm("Your browser does not support the mailto: protocol. Do you want to copy the email address to your clipboard?");
+            if (isConfirmed) {
+                copyToClipboard(email);
+                alert("Email address copied to clipboard!");
+            }
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement("textarea");
+            textarea.value = text;
+            textarea.style.position = "fixed"; // avoid scrolling to the bottom of the page
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
